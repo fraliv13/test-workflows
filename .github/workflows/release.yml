@@ -29,9 +29,11 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
+          printenv | sort
           echo Add other actions to build,
           echo $GITHUB_REF
           echo test, and deploy your project.
+          git branch
           echo $GITHUB_REF > version.txt
           git add .
           git commit -m "test"
