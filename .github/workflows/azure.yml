@@ -27,6 +27,8 @@ jobs:
     environment: production
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: master
     - run: touch aa.txt
     - name: Git Auto Commit
       # You may pin to the exact commit or the version.
