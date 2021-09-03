@@ -10,7 +10,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: main
-    - run: touch aa.txt
+    - run: touch aaa.txt
     - name: Git Auto Commit
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
       with:
