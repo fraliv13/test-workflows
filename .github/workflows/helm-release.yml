@@ -42,7 +42,7 @@ jobs:
         with:
           repository: ${{ env.HELM_REPO }}
           ref: refs/heads/main
-          token: ${{ env.BOT_TOKEN }}
+          token: ${{ secrets.BOT_TOKEN }}
           path: ${{ env.HELM_REPO_CODE_PATH }}
 
       - name: Upload helm charts to Helm Repo
