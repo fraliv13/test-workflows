@@ -55,6 +55,8 @@ jobs:
             #git config --global user.email "daprweb@microsoft.com"
             #git config --global user.name "rusi-bot"
             git add --all
+            git diff --name-only --staged
+            ls
             # Check if the dapr-${{ env.RELEASE_VERSION }}.tgz file is modified.
             if git diff --name-only --staged | grep -q ${{ env.RELEASE_VERSION }}; then
               # If it is, we update the Helm chart, since this is an intentional update.
