@@ -53,8 +53,8 @@ jobs:
             cp -r * $GITHUB_WORKSPACE/${{ env.HELM_REPO_CODE_PATH }}
             cd $GITHUB_WORKSPACE/${{ env.HELM_REPO_CODE_PATH }}
             helm repo index --url ${{ env.HELM_REPO }} --merge index.yaml .
-            #git config --global user.email "daprweb@microsoft.com"
-            #git config --global user.name "rusi-bot"
+            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config --global user.name "github-actions"
             git add --all
             git diff --name-only --staged
             ls
