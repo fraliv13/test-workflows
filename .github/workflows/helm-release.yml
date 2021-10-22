@@ -41,6 +41,8 @@ jobs:
           repository: ${{ env.HELM_REPO }}
           ref: refs/heads/main
           path: ${{ env.HELM_REPO_CODE_PATH }}
+      - name: Set release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
       - name: Upload helm charts to Helm Repo
         env:
               HELM_REPO_CODE_PATH: helm-charts
