@@ -1,0 +1,10 @@
+global:
+  registry: ghcr.io/osstotalsoft/rusi
+  tag: "0.0.9"
+  dnsSuffix: ".cluster.local"
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: "registrykey"
+  nodeSelector: {}
+  prometheus:
+    enabled: false
+    port: 9090
