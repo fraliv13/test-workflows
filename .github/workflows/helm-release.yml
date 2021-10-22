@@ -62,6 +62,6 @@ jobs:
               git push
             else
               # If not, this update was accidentally triggered by tagging a release before updating the Helm chart.
-              echo "::error::There is no change for ${ env.RELEASE_VERSION } Helm chart. Did you forget to update the chart version before tagging?"
+              echo "::error::There is no change for ${{ env.RELEASE_VERSION }} Helm chart. Did you forget to update the chart version before tagging?"
               exit -1
             fi
