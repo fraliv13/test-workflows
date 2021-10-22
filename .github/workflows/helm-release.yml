@@ -1,0 +1,66 @@
+name: Release
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      ARTIFACT_DIR: ./release
+      HELM_PACKAGE_DIR: helm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Package Helm chart
+        if: ${{ env.LATEST_RELEASE }} == "true"
+        env:
+              HELM_CHARTS_DIR: helm
+        run: |
+          mkdir -p ${{ env.ARTIFACT_DIR }}/${{ env.HELM_PACKAGE_DIR }}
+          helm package ${{ env.HELM_CHARTS_DIR }} --app-version ${{ env.RELEASE_VERSION }} -version ${{ env.RELEASE_VERSION }} --destination ${{ env.ARTIFACT_DIR }}/${{ env.HELM_PACKAGE_DIR }}
+          
+      - name: Checkout Helm Charts Repo
+        uses: actions/checkout@v2
+        env:
+              HELM_REPO: fraliv13/helm-charts
+              HELM_REPO_CODE_PATH: helm-charts
+        with:
+          repository: ${{ env.HELM_REPO }}
+          ref: refs/heads/main
+          token: ${{ secrets.DAPR_BOT_TOKEN }}
+          path: ${{ env.HELM_REPO_CODE_PATH }}
+      - name: Upload helm charts to Helm Repo
+        env:
+              HELM_REPO_CODE_PATH: helm-charts
+              HELM_REPO: https://fraliv13.github.io/helm-charts/
+        run: |
+            cd ${{ env.ARTIFACT_DIR }}/${{ env.HELM_PACKAGE_DIR }}
+            cp -r * $GITHUB_WORKSPACE/${{ env.HELM_REPO_CODE_PATH }}
+            cd $GITHUB_WORKSPACE/${{ env.HELM_REPO_CODE_PATH }}
+            helm repo index --url ${{ env.HELM_REPO }} --merge index.yaml .
+            git config --global user.email "daprweb@microsoft.com"
+            git config --global user.name "rusi-bot"
+            git add --all
+            # Check if the dapr-${ env.RELEASE_VERSION }.tgz file is modified.
+            if git diff --name-only --staged | grep -q ${ env.RELEASE_VERSION }; then
+              # If it is, we update the Helm chart, since this is an intentional update.
+              git commit -m "Rusi release - ${ env.RELEASE_VERSION }"
+              git push
+            else
+              # If not, this update was accidentally triggered by tagging a release before updating the Helm chart.
+              echo "::error::There is no change for ${ env.RELEASE_VERSION } Helm chart. Did you forget to update the chart version before tagging?"
+              exit -1
+            fi
