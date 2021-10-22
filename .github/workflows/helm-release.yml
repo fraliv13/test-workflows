@@ -42,19 +42,18 @@ jobs:
         with:
           repository: ${{ env.HELM_REPO }}
           ref: refs/heads/main
+          token: ${{ env.BOT_TOKEN }}
           path: ${{ env.HELM_REPO_CODE_PATH }}
 
       - name: Upload helm charts to Helm Repo
         env:
               HELM_REPO_CODE_PATH: helm-charts
               HELM_REPO: https://fraliv13.github.io/helm-charts/
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             cd ${{ env.ARTIFACT_DIR }}/${{ env.HELM_PACKAGE_DIR }}
             cp -r * $GITHUB_WORKSPACE/${{ env.HELM_REPO_CODE_PATH }}
             cd $GITHUB_WORKSPACE/${{ env.HELM_REPO_CODE_PATH }}
             helm repo index --url ${{ env.HELM_REPO }} --merge index.yaml .
-            git remote set-url --push origin https://x-access-token:$GITHUB_TOKEN@github.com/fraliv13/helm-charts
             git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git config --global user.name "github-actions"
             git add --all
